@@ -1,0 +1,47 @@
+services:
+  # Web Service
+  - type: web
+    name: hospital-management-web
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn core.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.1
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings.production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: hospital-management-db
+          property: connectionString
+
+  # PostgreSQL Database
+  - type: pserv
+    name: hospital-management-db
+    plan: free
+    runtime: postgresql
+    region: oregon
+    ipAllowList: []
+
+  # Redis for caching (optional)
+  - type: redis
+    name: hospital-management-redis
+    plan: free
+    region: oregon
+    ipAllowList: []
+
+# Static file service (optional, for better performance)
+services:
+  - type: web
+    name: hospital-management-static
+    runtime: static
+    buildCommand: python manage.py collectstatic --noinput
+    staticPublishPath: staticfiles
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings.production
