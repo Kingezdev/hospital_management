@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_patient_list' %}">
+                            <i class="fas fa-users"></i> Patients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_illness_list' %}">
+                            <i class="fas fa-virus"></i> Illnesses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_treatment_list' %}">
+                            <i class="fas fa-pills"></i> Treatments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_patientrecord_list' %}">
+                            <i class="fas fa-file-medical"></i> Patient Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'appointment_list' %}">
+                            <i class="fas fa-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-3 border-top pt-3">
+                        <div class="text-white-50 small mb-2 px-3">
+                            <i class="fas fa-user-circle me-2"></i>
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/logout/">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/" target="_blank">
+                            <i class="fas fa-cogs"></i> Django Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="h2 mb-0">Admin Dashboard</h1>
+                            <p class="mb-0 opacity-75">System Overview & Management</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <a href="/admin/" class="btn btn-light" target="_blank">
+                                    <i class="fas fa-cogs me-2"></i>Django Admin
+                                </a>
+                                <a href="{% url 'register' %}" class="btn btn-light">
+                                    <i class="fas fa-user-plus me-2"></i>Add User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="row g-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card dashboard-card primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Users</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_users }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card dashboard-card success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Patients</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_patients }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card dashboard-card info">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Doctors</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_doctors }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card dashboard-card warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Appointments</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_appointments }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Statistics -->
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-chart-pie me-2"></i>System Statistics
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="text-center p-3 rounded" style="background: rgba(67, 97, 238, 0.05);">
+                                        <div class="h4 mb-1 fw-bold text-primary">{{ total_users }}</div>
+                                        <div class="small text-muted">Users</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center p-3 rounded" style="background: rgba(6, 255, 165, 0.05);">
+                                        <div class="h4 mb-1 fw-bold text-success">{{ total_patients }}</div>
+                                        <div class="small text-muted">Patients</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center p-3 rounded" style="background: rgba(0, 180, 216, 0.05);">
+                                        <div class="h4 mb-1 fw-bold text-info">{{ total_doctors }}</div>
+                                        <div class="small text-muted">Doctors</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center p-3 rounded" style="background: rgba(255, 190, 11, 0.05);">
+                                        <div class="h4 mb-1 fw-bold text-warning">{{ total_appointments }}</div>
+                                        <div class="small text-muted">Appointments</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Appointments -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-clock me-2"></i>Recent Appointments
+                                </h6>
+                                <a href="{% url 'admin_appointment_list' %}" class="text-white text-decoration-none">
+                                    <small>View All</small>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for appointment in recent_appointments %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-user-circle me-2 text-muted"></i>
+                                                    {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-user-md me-2 text-muted"></i>
+                                                    Dr. {{ appointment.doctor.last_name }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-calendar me-2 text-muted"></i>
+                                                    {{ appointment.appointment_date|date:"M d, Y H:i" }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if appointment.status == 'scheduled' %}bg-primary
+                                                    {% elif appointment.status == 'completed' %}bg-success
+                                                    {% elif appointment.status == 'cancelled' %}bg-danger
+                                                    {% else %}bg-warning{% endif %}">
+                                                    {{ appointment.get_status_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4">
+                                                <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                                                <div>No recent appointments</div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-bolt me-2"></i>Quick Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'admin_patient_list' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <span>Manage Patients</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'admin_illness_list' %}" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                                        <i class="fas fa-virus fa-2x mb-2"></i>
+                                        <span>Manage Illnesses</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'admin_treatment_list' %}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                                        <i class="fas fa-pills fa-2x mb-2"></i>
+                                        <span>Manage Treatments</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="/admin/" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center" target="_blank">
+                                        <i class="fas fa-cogs fa-2x mb-2"></i>
+                                        <span>Django Admin</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Add smooth animations
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

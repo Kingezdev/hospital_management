@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'doctor_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'patient_list' %}">
+                            <i class="fas fa-users"></i> Patients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'illness_list' %}">
+                            <i class="fas fa-virus"></i> Illnesses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'treatment_list' %}">
+                            <i class="fas fa-pills"></i> Treatments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patientrecord_list' %}">
+                            <i class="fas fa-file-medical"></i> Patient Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'appointment_list' %}">
+                            <i class="fas fa-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="h2 mb-0">{% if object %}Edit Patient{% else %}Add Patient{% endif %}</h1>
+                            <p class="mb-0 opacity-75">{% if object %}Update patient information{% else %}Create new patient record{% endif %}</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{% url 'patient_list' %}" class="btn btn-light">
+                                <i class="fas fa-arrow-left me-2"></i>Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Personal Information -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-user me-2"></i>Personal Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" id="patientForm">
+                                {% csrf_token %}
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        {% for error in form.non_field_errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+    {{ form.first_name|add_class:"form-control" }}
+    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+        <i class="fas fa-user me-2"></i>First Name
+    </label>
+    {% if form.first_name.errors %}
+        <div class="text-danger small mt-1">
+            {% for error in form.first_name.errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+</div>
+<div class="col-md-6">
+    <div class="form-floating mb-3">
+        {{ form.last_name|add_class:"form-control" }}
+        <label for="{{ form.last_name.id_for_label }}" class="form-label">
+            <i class="fas fa-user me-2"></i>Last Name
+        </label>
+        {% if form.last_name.errors %}
+            <div class="text-danger small mt-1">
+                {% for error in form.last_name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            {{ form.date_of_birth|add_class:"form-control" }}
+                                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
+                                                <i class="fas fa-birthday-cake me-2"></i>Date of Birth
+                                            </label>
+                                            {% if form.date_of_birth.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.date_of_birth.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            {{ form.gender|add_class:"form-select" }}
+                                            <label for="{{ form.gender.id_for_label }}" class="form-label">
+                                                <i class="fas fa-venus-mars me-2"></i>Gender
+                                            </label>
+                                            {% if form.gender.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.gender.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating mb-3">
+                                            {{ form.blood_type|add_class:"form-control" }}
+                                            <label for="{{ form.blood_type.id_for_label }}" class="form-label">
+                                                <i class="fas fa-tint me-2"></i>Blood Type
+                                            </label>
+                                            {% if form.blood_type.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.blood_type.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {{ form.phone|add_class:"form-control" }}
+                                            <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                                <i class="fas fa-phone me-2"></i>Phone
+                                            </label>
+                                            {% if form.phone.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.phone.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating mb-3">
+                                            {{ form.email|add_class:"form-control" }}
+                                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                                <i class="fas fa-envelope me-2"></i>Email
+                                            </label>
+                                            {% if form.email.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {% for error in form.email.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    {{ form.address|add_class:"form-control" }}
+                                    <label for="{{ form.address.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Address
+                                    </label>
+                                    {% if form.address.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.address.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    {{ form.allergies|add_class:"form-control" }}
+                                    <label for="{{ form.allergies.id_for_label }}" class="form-label">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>Allergies
+                                    </label>
+                                    {% if form.allergies.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.allergies.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-phone-alt me-2"></i>Emergency Contact
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-floating mb-3">
+                                {{ form.emergency_contact|add_class:"form-control" }}
+                                <label for="{{ form.emergency_contact.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user me-2"></i>Contact Name
+                                </label>
+                                {% if form.emergency_contact.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.emergency_contact.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                {{ form.emergency_phone|add_class:"form-control" }}
+                                <label for="{{ form.emergency_phone.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone-alt me-2"></i>Contact Phone
+                                </label>
+                                {% if form.emergency_phone.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.emergency_phone.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="submit" form="patientForm" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-save me-2"></i>
+                                {% if object %}Update Patient{% else %}Add Patient{% endif %}
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'patient_list' %}" class="btn btn-outline-secondary btn-lg w-100">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+.form-floating {
+    position: relative;
+}
+
+.form-floating label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    height: 100%;
+    padding: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #6c757d;
+    pointer-events: none;
+    transform-origin: 0 0;
+    transition: opacity .1s ease-in-out,transform .1s ease-in-out;
+}
+
+.form-floating > .form-control {
+    padding: 1rem 0.75rem;
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > .form-control:focus ~ label {
+    color: #212529;
+    transform: scale(.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #212529;
+    transform: scale(.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.form-floating > .form-select {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+    height: calc(3.5rem + 2px);
+}
+
+.form-floating > .form-control:focus ~ label::after {
+    background-color: #212529;
+}
+
+.form-floating > .form-control:not(:-moz-placeholder-shown) ~ label {
+    opacity: 1;
+}
+
+.form-floating > .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+.form-floating > .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+</style>
+
+{% block extra_js %}
+<script>
+document.getElementById('patientForm').addEventListener('submit', function() {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+});
+</script>
+{% endblock %}
+{% endblock %}

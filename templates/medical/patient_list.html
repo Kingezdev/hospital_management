@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'doctor_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'patient_list' %}">
+                            <i class="fas fa-users"></i> Patients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'illness_list' %}">
+                            <i class="fas fa-virus"></i> Illnesses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'treatment_list' %}">
+                            <i class="fas fa-pills"></i> Treatments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patientrecord_list' %}">
+                            <i class="fas fa-file-medical"></i> Patient Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'appointment_list' %}">
+                            <i class="fas fa-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-3 border-top pt-3">
+                        <div class="text-white-50 small mb-2 px-3">
+                            <i class="fas fa-user-circle me-2"></i>
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/logout/">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="h2 mb-0">Patients</h1>
+                            <p class="mb-0 opacity-75">Manage patient information and records</p>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{% url 'patient_create' %}" class="btn btn-light">
+                                <i class="fas fa-user-plus me-2"></i>Add Patient
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="search" class="form-label fw-semibold">
+                                    <i class="fas fa-search me-2"></i>Search Patients
+                                </label>
+                                <input type="text" name="search" class="form-control" placeholder="Search by name, phone..." value="{{ request.GET.search }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Patients Cards/Table View -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Mobile Card View -->
+                    <div class="d-lg-none">
+                        {% for patient in patients %}
+                        <div class="card mb-3 mobile-patient-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar-circle bg-primary text-white me-3" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                        {{ patient.first_name.0 }}{{ patient.last_name.0 }}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0 fw-semibold">{{ patient.first_name }} {{ patient.last_name }}</h6>
+                                        <small class="text-muted">{{ patient.email|default:"No email" }}</small>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">DOB:</small>
+                                        <div class="fw-semibold">{{ patient.date_of_birth|date:"M d, Y" }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Gender:</small>
+                                        <div>
+                                            <span class="badge 
+                                                {% if patient.gender == 'M' %}bg-primary
+                                                {% elif patient.gender == 'F' %}bg-pink
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ patient.get_gender_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Phone:</small>
+                                        <div class="fw-semibold">{{ patient.phone }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Blood Type:</small>
+                                        <div>
+                                            {% if patient.blood_type %}
+                                                <span class="badge bg-danger">{{ patient.blood_type }}</span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-group w-100">
+                                    <a href="{% url 'patient_update' patient.pk %}" class="btn btn-sm btn-outline-primary flex-fill">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-info flex-fill" onclick="showPatientDetails({{ patient.pk }})">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                            <div class="text-muted">
+                                <h5>No patients found</h5>
+                                <p>Try adjusting your search criteria or add a new patient.</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Desktop Table View -->
+                    <div class="table-responsive d-none d-lg-block">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <i class="fas fa-user me-2"></i>Name
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-birthday-cake me-2"></i>Date of Birth
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-venus-mars me-2"></i>Gender
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-phone me-2"></i>Phone
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-tint me-2"></i>Blood Type
+                                    </th>
+                                    <th>
+                                        <i class="fas fa-cogs me-2"></i>Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for patient in patients %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-primary text-white me-3" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                                {{ patient.first_name.0 }}{{ patient.last_name.0 }}
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">{{ patient.first_name }} {{ patient.last_name }}</div>
+                                                <small class="text-muted">{{ patient.email|default:"No email" }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-birthday-cake text-muted me-2"></i>
+                                            {{ patient.date_of_birth|date:"M d, Y" }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if patient.gender == 'M' %}bg-primary
+                                            {% elif patient.gender == 'F' %}bg-pink
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ patient.get_gender_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-phone text-muted me-2"></i>
+                                            {{ patient.phone }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if patient.blood_type %}
+                                            <span class="badge bg-danger">{{ patient.blood_type }}</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'patient_update' patient.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-info" onclick="showPatientDetails({{ patient.pk }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                                        <div class="text-muted">
+                                            <h5>No patients found</h5>
+                                            <p>Try adjusting your search criteria or add a new patient.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if is_paginated %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function showPatientDetails(patientId) {
+    // This could open a modal with patient details
+    console.log('Show details for patient:', patientId);
+}
+</script>
+{% endblock %}
+{% endblock %}

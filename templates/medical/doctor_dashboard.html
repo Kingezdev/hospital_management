@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'doctor_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patient_list' %}">
+                            <i class="fas fa-users"></i> Patients
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'illness_list' %}">
+                            <i class="fas fa-virus"></i> Illnesses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'treatment_list' %}">
+                            <i class="fas fa-pills"></i> Treatments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patientrecord_list' %}">
+                            <i class="fas fa-file-medical"></i> Patient Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'appointment_list' %}">
+                            <i class="fas fa-calendar-check"></i> Appointments
+                        </a>
+                    </li>
+                    <li class="nav-item mt-3 border-top pt-3">
+                        <div class="text-white-50 small mb-2 px-3">
+                            <i class="fas fa-user-circle me-2"></i>
+                            {{ user.get_full_name|default:user.username }}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/logout/">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1 class="h2 mb-0">Doctor Dashboard</h1>
+                            <p class="mb-0 opacity-75">Welcome back, Dr. {{ user.last_name }}!</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <a href="{% url 'appointment_create' %}" class="btn btn-light">
+                                    <i class="fas fa-plus me-2"></i>New Appointment
+                                </a>
+                                <a href="{% url 'patientrecord_create' %}" class="btn btn-light">
+                                    <i class="fas fa-file-medical me-2"></i>New Record
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="row g-4">
+                <div class="col-xl-3 col-md-6 col-6">
+                    <div class="card dashboard-card primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Patients</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_patients }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 col-6">
+                    <div class="card dashboard-card success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Total Appointments</div>
+                                    <div class="h3 mb-0 fw-bold">{{ total_appointments }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 col-6">
+                    <div class="card dashboard-card info">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Upcoming</div>
+                                    <div class="h3 mb-0 fw-bold">{{ upcoming_appointments|length }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 col-6">
+                    <div class="card dashboard-card warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <div class="text-muted small fw-semibold">Recent Records</div>
+                                    <div class="h3 mb-0 fw-bold">{{ recent_records|length }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Lists Row -->
+            <div class="row g-4 mt-2">
+                <!-- Upcoming Appointments -->
+                <div class="col-lg-6 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-calendar-alt me-2"></i>Upcoming Appointments
+                                </h6>
+                                <a href="{% url 'appointment_list' %}" class="text-white text-decoration-none">
+                                    <small>View All</small>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% for appointment in upcoming_appointments %}
+                            <div class="d-flex align-items-center p-3 mb-2 rounded touch-friendly" style="background: rgba(67, 97, 238, 0.05);">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>{{ appointment.appointment_date|date:"M d, Y H:i" }}
+                                        </small>
+                                        <span class="badge bg-primary">{{ appointment.reason }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-times fa-2x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No upcoming appointments</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Patient Records -->
+                <div class="col-lg-6 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-file-medical me-2"></i>Recent Patient Records
+                                </h6>
+                                <a href="{% url 'patientrecord_list' %}" class="text-white text-decoration-none">
+                                    <small>View All</small>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% for record in recent_records %}
+                            <div class="d-flex align-items-center p-3 mb-2 rounded touch-friendly" style="background: rgba(6, 255, 165, 0.05);">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold">{{ record.patient.first_name }} {{ record.patient.last_name }}</h6>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-virus me-1"></i>{{ record.illness.name }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>{{ record.created_at|date:"M d, Y H:i" }}
+                                        </small>
+                                        {% if record.is_active %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-file-medical fa-2x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No recent records</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4 mt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="fas fa-bolt me-2"></i>Quick Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'patient_create' %}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center touch-action">
+                                        <i class="fas fa-user-plus fa-2x mb-2"></i>
+                                        <span>Add Patient</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'illness_create' %}" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center touch-action">
+                                        <i class="fas fa-virus fa-2x mb-2"></i>
+                                        <span>Add Illness</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'treatment_create' %}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center touch-action">
+                                        <i class="fas fa-pills fa-2x mb-2"></i>
+                                        <span>Add Treatment</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <a href="{% url 'appointment_create' %}" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center touch-action">
+                                        <i class="fas fa-calendar-plus fa-2x mb-2"></i>
+                                        <span>Schedule</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Add smooth animations
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}
