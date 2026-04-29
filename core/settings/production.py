@@ -8,10 +8,18 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Dynamic ALLOWED_HOSTS from environment variable or fallback
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 
-    'hospital-management-zq0l.onrender.com,*.onrender.com,localhost,127.0.0.1'
-).split(',')
+# Explicit ALLOWED_HOSTS for production
+ALLOWED_HOSTS = [
+    'hospital-management-zq0l.onrender.com',
+    '*.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+# Also check environment variable for additional hosts
+env_hosts = os.environ.get('ALLOWED_HOSTS', '')
+if env_hosts:
+    ALLOWED_HOSTS.extend(env_hosts.split(','))
 
 # Security settings
 SECURE_SSL_REDIRECT = True

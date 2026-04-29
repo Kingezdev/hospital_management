@@ -25,7 +25,20 @@ SECRET_KEY = 'django-insecure-2lk#r$@adx(8&_2fwj5pi4yh8d^e9z=u*3i9t=#qf5onub)r(n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Dynamic ALLOWED_HOSTS for both development and production
+import os
 ALLOWED_HOSTS = []
+
+# Check if we're in production (Render) environment
+if os.environ.get('DJANGO_SETTINGS_MODULE') == 'core.settings.production' or not DEBUG:
+    # Production hosts
+    render_hosts = os.environ.get('ALLOWED_HOSTS', 
+        'hospital-management-zq0l.onrender.com,*.onrender.com,localhost,127.0.0.1'
+    ).split(',')
+    ALLOWED_HOSTS.extend(render_hosts)
+else:
+    # Development hosts
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
