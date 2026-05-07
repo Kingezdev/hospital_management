@@ -85,14 +85,14 @@ class PatientUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
         return super().form_valid(form)
 
 
-class IllnessListView(LoginRequiredMixin, IsDoctorMixin, ListView):
+class IllnessListView(LoginRequiredMixin, IsDoctorOrAdminMixin, ListView):
     model = Illness
     template_name = 'medical/illness_list.html'
     context_object_name = 'illnesses'
     paginate_by = 10
 
 
-class IllnessCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
+class IllnessCreateView(LoginRequiredMixin, IsDoctorOrAdminMixin, CreateView):
     model = Illness
     form_class = IllnessForm
     template_name = 'medical/illness_form.html'
@@ -103,7 +103,7 @@ class IllnessCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
         return super().form_valid(form)
 
 
-class IllnessUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
+class IllnessUpdateView(LoginRequiredMixin, IsDoctorOrAdminMixin, UpdateView):
     model = Illness
     form_class = IllnessForm
     template_name = 'medical/illness_form.html'
@@ -114,14 +114,14 @@ class IllnessUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
         return super().form_valid(form)
 
 
-class TreatmentListView(LoginRequiredMixin, IsDoctorMixin, ListView):
+class TreatmentListView(LoginRequiredMixin, IsDoctorOrAdminMixin, ListView):
     model = Treatment
     template_name = 'medical/treatment_list.html'
     context_object_name = 'treatments'
     paginate_by = 10
 
 
-class TreatmentCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
+class TreatmentCreateView(LoginRequiredMixin, IsDoctorOrAdminMixin, CreateView):
     model = Treatment
     form_class = TreatmentForm
     template_name = 'medical/treatment_form.html'
@@ -132,7 +132,7 @@ class TreatmentCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
         return super().form_valid(form)
 
 
-class TreatmentUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
+class TreatmentUpdateView(LoginRequiredMixin, IsDoctorOrAdminMixin, UpdateView):
     model = Treatment
     form_class = TreatmentForm
     template_name = 'medical/treatment_form.html'
@@ -143,7 +143,7 @@ class TreatmentUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
         return super().form_valid(form)
 
 
-class PatientRecordListView(LoginRequiredMixin, IsDoctorMixin, ListView):
+class PatientRecordListView(LoginRequiredMixin, IsDoctorOrAdminMixin, ListView):
     model = PatientRecord
     template_name = 'medical/patientrecord_list.html'
     context_object_name = 'records'
@@ -153,7 +153,7 @@ class PatientRecordListView(LoginRequiredMixin, IsDoctorMixin, ListView):
         return PatientRecord.objects.filter(doctor=self.request.user)
 
 
-class PatientRecordCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
+class PatientRecordCreateView(LoginRequiredMixin, IsDoctorOrAdminMixin, CreateView):
     model = PatientRecord
     form_class = PatientRecordForm
     template_name = 'medical/patientrecord_form.html'
@@ -165,7 +165,7 @@ class PatientRecordCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
         return super().form_valid(form)
 
 
-class PatientRecordUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
+class PatientRecordUpdateView(LoginRequiredMixin, IsDoctorOrAdminMixin, UpdateView):
     model = PatientRecord
     form_class = PatientRecordForm
     template_name = 'medical/patientrecord_form.html'
@@ -176,7 +176,7 @@ class PatientRecordUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
         return super().form_valid(form)
 
 
-class AppointmentListView(LoginRequiredMixin, IsDoctorMixin, ListView):
+class AppointmentListView(LoginRequiredMixin, IsDoctorOrAdminMixin, ListView):
     model = Appointment
     template_name = 'medical/appointment_list.html'
     context_object_name = 'appointments'
@@ -186,7 +186,7 @@ class AppointmentListView(LoginRequiredMixin, IsDoctorMixin, ListView):
         return Appointment.objects.filter(doctor=self.request.user)
 
 
-class AppointmentCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
+class AppointmentCreateView(LoginRequiredMixin, IsDoctorOrAdminMixin, CreateView):
     model = Appointment
     form_class = AppointmentForm
     template_name = 'medical/appointment_form.html'
@@ -198,7 +198,7 @@ class AppointmentCreateView(LoginRequiredMixin, IsDoctorMixin, CreateView):
         return super().form_valid(form)
 
 
-class AppointmentUpdateView(LoginRequiredMixin, IsDoctorMixin, UpdateView):
+class AppointmentUpdateView(LoginRequiredMixin, IsDoctorOrAdminMixin, UpdateView):
     model = Appointment
     form_class = AppointmentForm
     template_name = 'medical/appointment_form.html'

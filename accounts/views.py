@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
@@ -41,3 +41,9 @@ def dashboard(request):
     elif user.user_type == 'doctor':
         return redirect('doctor_dashboard')
     return render(request, 'accounts/dashboard.html')
+
+
+def custom_logout(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('login')
