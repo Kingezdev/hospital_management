@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from .models import Patient, Illness, Treatment, PatientRecord, Appointment
 from .forms import PatientForm, IllnessForm, TreatmentForm, PatientRecordForm, AppointmentForm
+from accounts.models import User
 
 
 class IsDoctorMixin(UserPassesTestMixin):
